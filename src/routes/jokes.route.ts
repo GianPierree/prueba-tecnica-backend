@@ -16,6 +16,7 @@ const jokeController = new JokesController(jokeService);
 
 router.post('/', validateDto(CreateJokeDto), jokeController.create);
 router.get('/', jokeController.findAll);
+router.get('/emparejados', jokeController.findJokesPaired);
 router.get('/source/:source', jokeController.findJokeBySource);
 router.put('/:id', validateDto(UpdateJokeDto), jokeController.update);
 router.delete('/:id', jokeController.delete);

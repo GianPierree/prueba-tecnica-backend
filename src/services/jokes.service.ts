@@ -3,6 +3,7 @@ import { Joke } from '../interfaces/jokes.interface';
 import { v4 as uuidv4 } from 'uuid';
 import { JokeProviderFactory } from '../providers/joke.factory';
 import { CreateJokeDto } from '../dtos/create-joke.dto';
+import { JokePaired } from '../interfaces/joke-paired.interface';
 
 
 export class JokesService {
@@ -43,12 +44,46 @@ export class JokesService {
     };
   }
 
-  
   async updateJoke(id: string, content: string): Promise<boolean> {
     return await this.jokesRepository.update(id, content);
   }
 
   async deleteJoke(id: string): Promise<boolean> {
     return await this.jokesRepository.delete(id);
+  }
+
+  async findJokesPaired(): Promise<JokePaired[]> {
+    const chuckProvider = JokeProviderFactory.getProvider('chuck');
+    const dadProvider = JokeProviderFactory.getProvider('dad');
+
+    try {
+      const chuckPromises = Array.from({ length: 5 }, () => chuckProvider.getJoke());
+      const dadPromises = Array.from({ length: 5 }, () => dadProvider.getJoke());
+
+      const [chuckResults, dadResults] = await Promise.all([
+        Promise.all(chuckPromises), 
+        Promise.all(dadPromises)
+      ]);
+
+      const pairedJokes: JokePaired[] = chuckResults.map((chuckJoke, index) => {
+        const dadJoke = dadResults[index];
+        
+        return {
+          chuck: chuckJoke,
+          dad: dadJoke,
+          combined: this.combineJokes(chuckJoke, dadJoke)
+        };
+      });
+
+      return pairedJokes;
+
+    } catch (error: any) {
+      throw new Error('Error de comunicación con las APIs externas de chistes');
+    }
+  }
+
+  private combineJokes(chuck: string, dad: string): string {
+    const cleanChuck = chuck.replace(/\.$/, '');
+    return `${cleanChuck}, but ironically, ${dad.toLowerCase()}`;
   }
 }

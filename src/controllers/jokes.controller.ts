@@ -3,7 +3,6 @@ import { JokesService } from '../services/jokes.service';
 import { CreateJokeDto } from '../dtos/create-joke.dto';
 import { UpdateJokeDto } from '../dtos/update-joke.dto';
 
-
 export class JokesController {
   constructor(private jokesService: JokesService) {}
 
@@ -43,7 +42,6 @@ export class JokesController {
       res.status(404).json({ error: error.message });
     }
   }
-
   
   update = async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
@@ -79,4 +77,18 @@ export class JokesController {
       res.status(400).json({ error: error.message });
     }
   }
+
+  findJokesPaired = async (_req: Request, res: Response) => {
+    try {
+      const result = await this.jokesService.findJokesPaired();
+      
+      res.status(200).json({
+        success: true,
+        count: result.length,
+        data: result
+      });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  };
 }
