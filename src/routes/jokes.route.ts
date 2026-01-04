@@ -3,7 +3,7 @@ import { Router } from 'express';
 import { JokesController } from '../controllers/jokes.controller';
 import { JokesService } from '../services/jokes.service';
 import { JokesRepository } from '../repositories/jokes.repository';
-import { validateDto } from '../middleware/validation.middleware';
+import { validateDto } from '../middlewares/validation.middleware';
 import { PostgresConfig } from '../configs/postgres.config';
 import { CreateJokeDto } from '../dtos/create-joke.dto';
 import { UpdateJokeDto } from '../dtos/update-joke.dto';
