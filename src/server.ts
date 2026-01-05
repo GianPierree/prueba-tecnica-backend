@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import 'reflect-metadata';
 import app from "./app"
 import { PostgresConfig } from './configs/postgres.config';

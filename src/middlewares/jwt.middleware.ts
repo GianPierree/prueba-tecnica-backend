@@ -28,3 +28,14 @@ export const verifyToken = (req: AuthRequest, res: Response, next: NextFunction)
     return res.status(403).json({ error: 'Token inválido o expirado' });
   }
 };
+
+export const authorizeRole = (allowedRoles: string[]) => {
+  return (req: AuthRequest, res: Response, next: NextFunction) => {
+    if (!req.user || !allowedRoles.includes(req.user.role)) {
+      return res.status(403).json({ 
+        error: `Acceso prohibido: Se requiere rol [${allowedRoles.join(', ')}]` 
+      });
+    }
+    next();
+  };
+};
