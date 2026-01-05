@@ -106,3 +106,6 @@ JWT_EXPIRES_IN=1h
 # OAuth (GitHub)
 GITHUB_CLIENT_ID=tu_client_id
 GITHUB_CLIENT_SECRET=tu_client_secret
+```
+
+> **Nota:** Algunos nombres están en español porque así se pedía en la prueba técnica.
