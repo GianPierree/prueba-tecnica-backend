@@ -18,7 +18,7 @@ Para ejecutar este proyecto localmente, asegúrate de tener instalado:
 
 1.  **Clonar el repositorio:**
     ```bash
-    git clone <URL_DEL_REPOSITORIO>
+    git clone https://github.com/GianPierree/prueba-tecnica-backend
     cd prueba-tecnica-backend
     ```
 

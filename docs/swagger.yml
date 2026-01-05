@@ -1,0 +1,189 @@
+openapi: 3.0.0
+info:
+  title: API de Prueba Técnica
+  description: API Backend con Node.js, Express y TypeScript
+  version: 1.0.0
+  contact:
+    name: Gianpierree
+
+servers:
+  - url: http://localhost:3000/api
+    description: Servidor Local
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    LoginDto:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          default: admin
+        password:
+          type: string
+          default: password123
+
+    CreateJokeDto:
+      type: object
+      required:
+        - content
+        - author_id
+        - theme_id
+      properties:
+        content:
+          type: string
+          description: Contenido del chiste
+        author_id:
+          type: integer
+          description: ID del autor
+        theme_id:
+          type: integer
+          description: ID de la temática
+
+    AlertDto:
+      type: object
+      required:
+        - destinatario
+        - mensaje
+      properties:
+        tipo:
+          type: string
+          enum: [email, sms]
+          default: email
+        destinatario:
+          type: string
+        mensaje:
+          type: string
+
+security:
+  - bearerAuth: []
+
+paths:
+  /auth/login:
+    post:
+      summary: Iniciar sesión
+      tags: [Auth]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginDto'
+      responses:
+        200:
+          description: Login exitoso
+        401:
+          description: Credenciales inválidas
+
+  /auth/external/callback:
+    get:
+      summary: Callback OAuth2 (GitHub)
+      tags: [Auth]
+      security: []
+      parameters:
+        - in: query
+          name: code
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Login externo exitoso
+
+  /jokes:
+    get:
+      summary: Listar chistes
+      tags: [Jokes]
+      responses:
+        200:
+          description: Lista de chistes
+    post:
+      summary: Crear chiste
+      tags: [Jokes]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateJokeDto'
+      responses:
+        201:
+          description: Chiste creado
+
+  /jokes/emparejados:
+    get:
+      summary: Obtener chistes externos emparejados (Chuck + Dad)
+      tags: [Jokes]
+      responses:
+        200:
+          description: Éxito
+
+  /jokes/source/{source}:
+    get:
+      summary: Obtener chiste por fuente (Chuck o Dad)
+      tags: [Jokes]
+      parameters:
+        - in: path
+          name: source
+          schema:
+            type: string
+            enum: [chuck, dad]
+          required: true
+      responses:
+        200:
+          description: Chiste obtenido
+
+  /math/lcm:
+    get:
+      summary: Calcular MCM
+      tags: [Math]
+      security: []
+      parameters:
+        - in: query
+          name: numbers
+          schema:
+            type: string
+          description: Lista separada por comas (4,6,8)
+          required: true
+      responses:
+        200:
+          description: Resultado exitoso
+
+  /math/plus-one:
+    get:
+      summary: Sumar 1
+      tags: [Math]
+      security: []
+      parameters:
+        - in: query
+          name: number
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          description: Resultado exitoso
+
+  /alert:
+    post:
+      summary: Enviar alerta (Strategy Pattern)
+      tags: [Alerts]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertDto'
+      responses:
+        200:
+          description: Alerta enviada
